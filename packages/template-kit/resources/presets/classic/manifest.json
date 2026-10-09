@@ -1,0 +1,19 @@
+{
+  "format": "cvolve-template",
+  "formatVersion": 1,
+  "name": "Classic",
+  "slug": "classic",
+  "version": "1.0.0",
+  "author": "Future Site Di Haidar Anbar",
+  "licence": "MIT (template), SIL OFL 1.1 (Source Serif 4 font)",
+  "description": "Traditional single-column serif layout. Conservative, ATS-friendly and suited to academic, healthcare and corporate applications.",
+  "page": "A4",
+  "maxPages": 3,
+  "fonts": [
+    {"family": "Source Serif", "file": "fonts/source-serif-400-normal.woff2", "weight": "400"},
+    {"family": "Source Serif", "file": "fonts/source-serif-400-italic.woff2", "weight": "400", "style": "italic"},
+    {"family": "Source Serif", "file": "fonts/source-serif-600-normal.woff2", "weight": "600"},
+    {"family": "Source Serif", "file": "fonts/source-serif-700-normal.woff2", "weight": "700"}
+  ],
+  "docx": {"accent": "#7A1F2B", "font": "Georgia"}
+}

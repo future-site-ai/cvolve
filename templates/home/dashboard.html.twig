@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+{% block title %}My CVs{% endblock %}
+{% block body %}
+    <div class="page-head">
+        <div>
+            <h1>My CVs</h1>
+            <p>Every CV draws from your master profile. Editing a CV never changes the profile.</p>
+        </div>
+        <div class="row">
+            <a class="btn" href="{{ path('profile_edit') }}">Edit master profile</a>
+            <a class="btn btn-primary" href="{{ path('cv_new') }}">+ New CV</a>
+        </div>
+    </div>
+
+    {% if profile is null or profile.isEmpty or profile.experiences|length == 0 %}
+        <div class="alert alert-info" style="margin-bottom:18px">
+            <strong>Start with your master profile.</strong> Fill it in with the forms or
+            <a href="{{ path('profile_import') }}">import a Markdown file or an existing CV</a>. New CVs are built from it.
+        </div>
+    {% endif %}
+
+    {% if cvs is empty %}
+        <div class="card empty">
+            <h2>No CVs yet</h2>
+            <p>Create your first CV: choose a template and the parts of your profile to include.</p>
+            <a class="btn btn-primary" href="{{ path('cv_new') }}">Create a CV</a>
+        </div>
+    {% else %}
+        <div class="grid grid-2">
+            {% for cv in cvs %}
+                <a class="card card-link cv-card" href="{{ path('cv_editor', {id: cv.id}) }}">
+                    <div class="row" style="justify-content:space-between;align-items:flex-start">
+                        <h3>{{ cv.title }}</h3>
+                        {% if pending[cv.id] is defined %}<span class="badge badge-warning">{{ pending[cv.id] }} to review</span>{% endif %}
+                    </div>
+                    <div class="meta">{{ cv.template.name }} · {{ cv.locales|map(l => l|upper)|join(', ') }} · updated {{ cv.updatedAt|date('d M Y, H:i') }}</div>
+                    {% if cv.shareEnabled %}<div style="margin-top:8px"><span class="badge badge-success">Public link on</span></div>{% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

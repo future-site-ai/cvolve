@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% block title %}Compare versions{% endblock %}
+{% block body %}
+    <div class="page-head">
+        <div>
+            <h1>{{ version.label }}</h1>
+            <p>{{ version.createdAt|date('d M Y H:i') }} compared with {{ other ? '“' ~ other.label ~ '”' : 'the current CV' }}. <span class="badge badge-danger">− only in this version</span> <span class="badge badge-success">+ only in {{ other ? 'the other' : 'current' }}</span></p>
+        </div>
+        <div class="row">
+            <form method="get" class="row">
+                <select name="compare" style="width:auto">
+                    <option value="">Current CV</option>
+                    {% for v in all_versions %}{% if v.id != version.id %}<option value="{{ v.id }}" {{ other and other.id == v.id ? 'selected' }}>{{ v.label }} ({{ v.createdAt|date('d M H:i') }})</option>{% endif %}{% endfor %}
+                </select>
+                <button class="btn">Compare</button>
+            </form>
+            <a class="btn" href="{{ path('cv_versions', {id: cv.id, locale: version.locale}) }}">All versions</a>
+        </div>
+    </div>
+    <div class="card" style="padding:8px 0">
+        <div class="diff">{% for row in diff|diff_compact(3) %}<div class="{{ row.type }}">{{ row.line ?: ' ' }}</div>{% endfor %}</div>
+    </div>
+{% endblock %}

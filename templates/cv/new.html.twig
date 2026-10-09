@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+{% block title %}New CV{% endblock %}
+{% block body %}
+    <div class="page-head">
+        <div>
+            <h1>New CV</h1>
+            <p>Pick a template and what to bring in from your master profile. You can change everything later.</p>
+        </div>
+        <a class="btn" href="{{ path('app_dashboard') }}">Cancel</a>
+    </div>
+    {{ form_start(form) }}
+        <div class="card stack" style="margin-bottom:16px">
+            <div class="fields">
+                {{ form_row(form.title) }}
+                {{ form_row(form.locale) }}
+            </div>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+            <h2>Template</h2>
+            {{ form_widget(form.template) }}
+            {{ form_errors(form.template) }}
+        </div>
+        <div class="card stack" style="margin-bottom:16px">
+            <h2>Content</h2>
+            {% if form.summary is defined %}{{ form_row(form.summary) }}{% endif %}
+            {% if form.experiences is defined %}{{ form_row(form.experiences) }}{% endif %}
+            {{ form_row(form.sections, {attr: {class: 'cols'}}) }}
+            {% if profile is null or profile.isEmpty %}
+                <p class="muted">Your master profile is empty, so the CV starts blank. <a href="{{ path('profile_edit') }}">Fill in your profile</a> first to save typing.</p>
+            {% endif %}
+        </div>
+        <div class="form-actions"><button class="btn btn-primary">Create CV</button></div>
+    {{ form_end(form) }}
+{% endblock %}

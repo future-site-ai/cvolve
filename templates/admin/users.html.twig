@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block title %}Users · Admin{% endblock %}
+{% block body %}
+    <div class="page-head"><div><h1>Users</h1></div>
+        <form method="get" class="row"><input type="search" name="q" value="{{ q }}" placeholder="Search name or email" style="width:240px"><button class="btn">Search</button></form>
+    </div>
+    {{ include('admin/_nav.html.twig') }}
+    <div class="card table-wrap">
+        <table class="table">
+            <thead><tr><th>User</th><th>Status</th><th>Role</th><th>Joined</th><th></th></tr></thead>
+            <tbody>
+                {% for user in users %}
+                    {% set token = csrf_token('admin-user-' ~ user.id) %}
+                    <tr>
+                        <td><strong>{{ user.fullName }}</strong><br><span class="muted small">{{ user.email }}</span></td>
+                        <td>
+                            {% if not user.enabled %}<span class="badge badge-danger">disabled</span>{% elseif not user.verified %}<span class="badge badge-warning">unverified</span>{% else %}<span class="badge badge-success">active</span>{% endif %}
+                        </td>
+                        <td>{% if user.admin %}<span class="badge badge-primary">admin</span>{% else %}user{% endif %}</td>
+                        <td class="muted nowrap">{{ user.createdAt|date('d M Y') }}</td>
+                        <td class="nowrap" style="text-align:right">
+                            {% for action, label in {
+                                (user.enabled ? 'disable' : 'enable'): user.enabled ? 'Disable' : 'Enable',
+                                (user.admin ? 'demote' : 'promote'): user.admin ? 'Remove admin' : 'Make admin'
+                            }|merge(user.verified ? {} : {verify: 'Mark verified'}) %}
+                                <form method="post" action="{{ path('admin_user_action', {id: user.id, action: action}) }}" class="inline">
+                                    <input type="hidden" name="_token" value="{{ token }}"><input type="hidden" name="q" value="{{ q }}">
+                                    <button class="btn btn-sm {{ action in ['disable', 'demote'] ? 'btn-danger' }}">{{ label }}</button>
+                                </form>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

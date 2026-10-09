@@ -1,0 +1,192 @@
+{
+  "personal": {
+    "fullName": "Alex Morgan",
+    "headline": "Senior Software Engineer",
+    "email": "alex.morgan@example.com",
+    "phone": "+39 000 000 0000",
+    "address": "Milan, Italy",
+    "nationality": "Italian",
+    "dateOfBirth": "",
+    "website": "https://alexmorgan.dev",
+    "linkedin": "https://linkedin.com/in/alexmorgan",
+    "github": "https://github.com/alexmorgan",
+    "workAuthorization": "EU citizen",
+    "drivingLicence": "Category B",
+    "extra": "Time zone: CET (+1). Open to remote and hybrid roles."
+  },
+  "summaries": [
+    {
+      "label": "Software (full)",
+      "content": "**Senior Software Engineer** with 9 years of experience building web platforms and APIs in PHP/Symfony, Python and React. Comfortable owning a product end to end: requirements, architecture, delivery and operations. Recent focus on AI features (RAG, agents) built on top of solid, well-tested back ends."
+    },
+    {
+      "label": "Backend (short)",
+      "content": "Backend engineer specialised in **PHP 8 / Symfony** and **React**, with a track record of shipping payment, onboarding and reporting systems that handle real money and real users. Pragmatic about architecture, strict about tests."
+    },
+    {
+      "label": "Healthcare software",
+      "content": "Software engineer with a background in **healthcare IT**: clinical data integration (HL7 / FHIR), hospital workflow tools and privacy-aware data pipelines. Bridges clinical staff and engineering teams."
+    }
+  ],
+  "experiences": [
+    {
+      "title": "Senior Full-Stack Engineer",
+      "company": "Northwind Digital",
+      "location": "Milan, Italy",
+      "start": "Mar 2022",
+      "end": "Present",
+      "description": null,
+      "tech": "Symfony / PHP 8, React, PostgreSQL, Docker, Redis",
+      "bullets": [
+        "Lead developer on the company's customer portal: architecture, code review and release planning.",
+        "Designed versioned REST APIs (v1/v2) consumed by web and mobile clients.",
+        "Introduced CI pipelines with static analysis and automated tests, cutting production incidents by **40%**.",
+        "Mentor two junior developers."
+      ],
+      "projects": [
+        {
+          "name": "Investment Portal",
+          "url": "https://example.com",
+          "period": null,
+          "description": "Online investment platform for retail customers.",
+          "tech": "Symfony / PHP 8, PostgreSQL, Stripe, DocuSign",
+          "bullets": [
+            "Built the order management system and pricing engine.",
+            "Integrated payments, e-signature and KYC verification providers.",
+            "Processed **€2M+** in customer orders in the first year."
+          ]
+        },
+        {
+          "name": "Support Assistant",
+          "url": null,
+          "period": "2025",
+          "description": "AI assistant that answers customer questions from the knowledge base.",
+          "tech": "Python, FastAPI, pgvector",
+          "bullets": [
+            "Retrieval-augmented generation over 3,000 support articles.",
+            "Reduced first-response time on support tickets by half."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Software Engineer",
+      "company": "Mediplan Health",
+      "location": "Turin, Italy",
+      "start": "Jan 2019",
+      "end": "Feb 2022",
+      "description": null,
+      "tech": "Python / Django, HL7 / FHIR, PostgreSQL",
+      "bullets": [
+        "Built integrations between hospital information systems using HL7 v2 and FHIR.",
+        "Developed scheduling tools used daily by 400+ clinical staff.",
+        "Worked with the DPO on GDPR-compliant data retention and audit logging."
+      ],
+      "projects": []
+    },
+    {
+      "title": "Junior Web Developer",
+      "company": "Bluefin Agency",
+      "location": "Bologna, Italy",
+      "start": "Sept 2016",
+      "end": "Dec 2018",
+      "description": null,
+      "tech": "PHP, JavaScript, MySQL",
+      "bullets": [
+        "Delivered e-commerce and marketing sites for 20+ clients.",
+        "Maintained shared component library and deployment scripts."
+      ],
+      "projects": []
+    }
+  ],
+  "education": [
+    {
+      "degree": "M.Sc. Computer Engineering",
+      "institution": "Example Polytechnic University",
+      "location": "Milan, Italy",
+      "start": "Sept 2014",
+      "end": "Jul 2016",
+      "grade": "108/110",
+      "description": "Thesis: scalable event-driven architectures for clinical data."
+    },
+    {
+      "degree": "B.Sc. Computer Engineering",
+      "institution": "Example University",
+      "location": "Bologna, Italy",
+      "start": "Sept 2011",
+      "end": "Jul 2014",
+      "grade": null,
+      "description": null
+    }
+  ],
+  "skills": [
+    {"group": "Back-end", "skills": [{"name": "PHP 8 / Symfony"}, {"name": "Python / Django"}, {"name": "FastAPI"}, {"name": "REST & GraphQL APIs"}]},
+    {"group": "Front-end", "skills": [{"name": "React"}, {"name": "TypeScript"}, {"name": "Hotwire / Stimulus"}]},
+    {"group": "Data", "skills": [{"name": "PostgreSQL"}, {"name": "MySQL"}, {"name": "Redis"}]},
+    {"group": "AI", "skills": [{"name": "RAG"}, {"name": "LLM agents"}, {"name": "pgvector"}]},
+    {"group": "DevOps", "skills": [{"name": "Docker"}, {"name": "GitHub Actions"}, {"name": "Linux"}]}
+  ],
+  "languages": [
+    {"name": "Italian", "level": "Native", "note": null},
+    {"name": "English", "level": "C1 — Advanced", "note": null},
+    {"name": "Spanish", "level": "B1 — Intermediate", "note": null}
+  ],
+  "certifications": [
+    {"name": "AWS Certified Developer — Associate", "issuer": "Amazon Web Services", "date": "Jun 2024", "credentialId": null},
+    {"name": "Symfony 6 Certification", "issuer": "SensioLabs", "date": "Nov 2023", "credentialId": null},
+    {"name": "Professional Scrum Master I", "issuer": "Scrum.org", "date": "Mar 2021", "credentialId": null}
+  ],
+  "projects": [
+    {
+      "name": "Open Source CLI Toolkit",
+      "role": "Maintainer",
+      "start": "Jan 2023",
+      "end": "Present",
+      "url": "https://github.com/alexmorgan",
+      "tech": "PHP, Symfony Console",
+      "description": "Command-line helpers for Symfony projects.",
+      "highlights": ["500+ GitHub stars.", "Used in production by several agencies."]
+    },
+    {
+      "name": "Clinic Booking App",
+      "role": "Developer",
+      "start": "Feb 2021",
+      "end": "Aug 2021",
+      "url": null,
+      "tech": "Django, React",
+      "description": "Appointment booking for small medical practices.",
+      "highlights": ["Reminders by email and SMS reduced no-shows by 30%."]
+    }
+  ],
+  "publications": [
+    {
+      "title": "Event Sourcing for Clinical Data Pipelines",
+      "authors": "**A. Morgan**, J. Doe",
+      "venue": "Example Conference on Health Informatics",
+      "date": "Oct 2017",
+      "url": null
+    }
+  ],
+  "custom_sections": [
+    {
+      "title": "Soft Skills",
+      "kind": "soft_skills",
+      "body": "- Clear communication with technical and non-technical stakeholders.\n- Mentoring and code review.\n- Ownership from requirements to release."
+    },
+    {
+      "title": "Volunteering",
+      "kind": "volunteering",
+      "body": "- Coding workshops for high-school students (2019–present)."
+    },
+    {
+      "title": "Awards",
+      "kind": "awards",
+      "body": "- Hackathon winner, Example City Health Hack 2020."
+    },
+    {
+      "title": "Interests",
+      "kind": "interests",
+      "body": "Cycling, photography, chess."
+    }
+  ]
+}

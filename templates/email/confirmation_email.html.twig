@@ -1,0 +1,7 @@
+{% extends 'email/_layout.html.twig' %}
+{% block content %}
+    <h1>Hi {{ user.fullName }}, confirm your email</h1>
+    <p>Thanks for signing up for CVolve. Confirm your email address to start building your CVs:</p>
+    <p><a class="button" href="{{ signedUrl|raw }}">Confirm my email</a></p>
+    <p class="muted">This link expires {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.</p>
+{% endblock %}

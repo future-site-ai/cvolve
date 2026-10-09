@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="{{ variant.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>{{ variant.header.name|default(cv.title) }} — CV</title>
+    <style>
+        body { margin: 0; font: 14px/1.4 system-ui, sans-serif; background: #d4d8de; }
+        .bar { position: sticky; top: 0; display: flex; gap: 10px; align-items: center; justify-content: center; padding: 10px; background: #17202c; color: #fff; flex-wrap: wrap; }
+        .bar a { color: #fff; background: #4f46e5; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: 600; }
+        .bar a.lang { background: transparent; border: 1px solid rgba(255,255,255,.3); padding: 4px 10px; }
+        iframe { display: block; width: 100%; height: calc(100vh - 52px); border: 0; }
+    </style>
+</head>
+<body>
+    <div class="bar">
+        <strong>{{ variant.header.name|default(cv.title) }}</strong>
+        {% for v in cv.variants %}{% if cv.variants|length > 1 %}<a class="lang" href="?lang={{ v.locale }}">{{ v.locale|upper }}</a>{% endif %}{% endfor %}
+        <a href="{{ path('share_pdf', {token: token, lang: variant.locale}) }}">Download PDF</a>
+    </div>
+    <iframe sandbox="" src="{{ path('share_document', {token: token, lang: variant.locale}) }}" title="CV"></iframe>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<turbo-frame id="sections-panel">
+    {% set template = cv.template %}
+    {% set token = csrf_token('cv-sections-' ~ cv.id) %}
+    {% set locale = variant.locale %}
+
+    {{ include('_flashes.html.twig') }}
+
+    <turbo-frame id="cv-header">
+        <div class="section-card" style="margin-bottom:10px">
+            <div class="section-card-head">
+                <div class="section-card-title">
+                    <strong>{{ variant.header.name|default('Your name') }}</strong>
+                    <span>{{ variant.header.headline|default('No headline') }}</span>
+                </div>
+                <a class="btn btn-sm" href="{{ path('cv_header_edit', {id: cv.id, locale: locale}) }}">Edit header</a>
+            </div>
+        </div>
+    </turbo-frame>
+
+    <div class="row" style="margin:14px 0 8px">
+        <h3 style="margin:0;flex:1">Sections</h3>
+        <details class="menu">
+            <summary class="btn btn-sm btn-primary">+ Add section</summary>
+            <div class="menu-panel">
+                {% for type in template.supportedSectionTypes %}
+                    <form method="post" action="{{ path('cv_section_add', {id: cv.id, locale: locale}) }}" data-turbo-frame="sections-panel" class="row" style="margin-bottom:4px;flex-wrap:nowrap">
+                        <input type="hidden" name="_token" value="{{ token }}">
+                        <input type="hidden" name="type" value="{{ type }}">
+                        <span style="flex:1;font-size:13px">{{ section_label(type) }}</span>
+                        <button class="btn btn-sm" name="source" value="master" title="Copy from your master profile">From profile</button>
+                        <button class="btn btn-sm btn-ghost" name="source" value="empty">Empty</button>
+                    </form>
+                {% endfor %}
+            </div>
+        </details>
+    </div>
+
+    <div class="section-list">
+        {% for section in variant.orderedSections %}
+            <turbo-frame id="section-{{ section.id }}">
+                <div class="section-card {{ section.visible ? '' : 'is-hidden' }}">
+                    <div class="section-card-head">
+                        <div class="section-card-title">
+                            <strong>{{ section.title }}</strong>
+                            <span>{{ section_label(section.type) }}{% if template.regions|length > 1 %} · {{ (section.region ?? template.defaultRegion(section.type))|capitalize }}{% endif %}{% if not section.visible %} · hidden{% endif %}</span>
+                            {% if not template.supportsSection(section.type) %}<div class="unsupported">Not shown by this template</div>{% endif %}
+                        </div>
+                        <div class="section-tools">
+                            {% for action, label in {up: '↑', down: '↓', toggle: section.visible ? '◉' : '○'} %}
+                                <form method="post" action="{{ path('cv_section_action', {id: cv.id, sectionId: section.id, action: action, locale: locale}) }}" data-turbo-frame="sections-panel" class="inline">
+                                    <input type="hidden" name="_token" value="{{ token }}">
+                                    <button class="btn btn-ghost btn-icon btn-sm" title="{{ action == 'toggle' ? (section.visible ? 'Hide section' : 'Show section') : 'Move ' ~ action }}" {{ (action == 'up' and loop.parent.loop.first) or (action == 'down' and loop.parent.loop.last) ? 'disabled' }}>{{ label }}</button>
+                                </form>
+                            {% endfor %}
+                            <a class="btn btn-sm" href="{{ path('cv_section_edit', {id: cv.id, sectionId: section.id, locale: locale}) }}">Edit</a>
+                            <form method="post" action="{{ path('cv_section_action', {id: cv.id, sectionId: section.id, action: 'delete', locale: locale}) }}" data-turbo-frame="sections-panel" data-turbo-confirm="Remove the section “{{ section.title }}” from this CV? (Your master profile is not affected.)" class="inline">
+                                <input type="hidden" name="_token" value="{{ token }}">
+                                <button class="btn btn-ghost btn-icon btn-sm btn-danger" title="Remove section">✕</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="section-card-body">{{ section.content|section_summary(section.type) }}</div>
+                </div>
+            </turbo-frame>
+        {% else %}
+            <div class="card empty small">This CV has no sections yet. Add some from your profile.</div>
+        {% endfor %}
+    </div>
+</turbo-frame>

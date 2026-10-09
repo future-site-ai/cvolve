@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+{% block title %}Sign up{% endblock %}
+{% block container_class %}container-narrow{% endblock %}
+{% block body %}
+    <div class="card">
+        <h1>Create your account</h1>
+        <p class="muted">Build your master profile once, then generate tailored CVs from it.</p>
+        {{ form_start(form) }}
+            {{ form_row(form.fullName) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.plainPassword.first) }}
+            {{ form_row(form.plainPassword.second) }}
+            {{ form_errors(form.plainPassword) }}
+            <button class="btn btn-primary btn-block" type="submit">Create account</button>
+        {{ form_end(form) }}
+        <hr>
+        <p class="small muted" style="margin:0">Already registered? <a href="{{ path('app_login') }}">Log in</a></p>
+    </div>
+{% endblock %}

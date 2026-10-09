@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block title %}Choose a new password{% endblock %}
+{% block container_class %}container-narrow{% endblock %}
+{% block body %}
+    <div class="card">
+        <h1>Choose a new password</h1>
+        {{ form_start(resetForm) }}
+            {{ form_row(resetForm.plainPassword.first) }}
+            {{ form_row(resetForm.plainPassword.second) }}
+            {{ form_errors(resetForm.plainPassword) }}
+            <button class="btn btn-primary btn-block">Reset password</button>
+        {{ form_end(resetForm) }}
+    </div>
+{% endblock %}

@@ -1,0 +1,27 @@
+framework:
+    messenger:
+        failure_transport: failed
+
+        transports:
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                retry_strategy:
+                    max_retries: 2
+                    multiplier: 2
+            failed: 'doctrine://default?queue_name=failed'
+
+        default_bus: messenger.bus.default
+
+        buses:
+            messenger.bus.default: []
+
+        routing:
+            Symfony\Component\Mailer\Messenger\SendEmailMessage: async
+            App\Message\ExportCvMessage: async
+            App\Message\ParseImportMessage: async
+
+when@test:
+    framework:
+        messenger:
+            transports:
+                async: 'sync://'

@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% block title %}Master profile{% endblock %}
+{% block body %}
+    <div class="page-head">
+        <div>
+            <h1>Master profile</h1>
+            <p>Your complete career record. CVs copy what they need from here.</p>
+        </div>
+        <div class="row">
+            <a class="btn" href="{{ path('profile_import') }}">Import…</a>
+            <a class="btn" href="{{ path('profile_export') }}">Export JSON</a>
+        </div>
+    </div>
+
+    <nav class="tabs">
+        <a href="{{ path('profile_edit') }}" class="{{ section == 'personal' ? 'active' }}">Personal</a>
+        {% for key, label in constant('App\\Entity\\Profile\\MasterProfile::SECTIONS') %}
+            <a href="{{ path('profile_section', {section: key}) }}" class="{{ section == key ? 'active' }}">{{ label }}<span class="count">{{ attribute(profile, key)|length }}</span></a>
+        {% endfor %}
+    </nav>
+
+    {{ form_start(form, {attr: {class: 'card', novalidate: 'novalidate'}}) }}
+        {% if section == 'personal' %}
+            <div class="row" style="align-items:flex-start;gap:20px;margin-bottom:16px">
+                <div>
+                    {% if profile.personal.photo %}
+                        <img src="{{ path('profile_photo') }}?v={{ profile.updatedAt.timestamp }}" alt="Profile photo" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:1px solid var(--border)">
+                    {% else %}
+                        <div style="width:96px;height:96px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;color:var(--muted)">No photo</div>
+                    {% endif %}
+                </div>
+                <div style="flex:1;min-width:240px">
+                    {{ form_row(form.photo) }}
+                    {% if profile.personal.photo %}
+                        <button class="btn btn-sm btn-danger" form="photo-delete">Remove photo</button>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="fields">
+                {% for child in form.personal %}{{ form_row(child) }}{% endfor %}
+            </div>
+        {% else %}
+            {% set help = {
+                summaries: 'Keep several summaries for different targets (e.g. software vs. healthcare). Each CV picks one.',
+                experiences: 'Add jobs with their projects and achievements. Projects done inside a job go under that job.',
+                educations: 'Degrees, exchange programmes, notable courses.',
+                skillGroups: 'Group skills (Back-end, Data, DevOps…). Levels are optional.',
+                languages: 'Use CEFR levels (A1–C2) or Native.',
+                certifications: 'Certifications and trainings.',
+                projects: 'Personal or entrepreneurial projects that are not tied to an employer.',
+                publications: 'Papers, articles, talks. Wrap your own name in **…** to bold it.',
+                customSections: 'Anything else: volunteering, awards, interests, soft skills.'
+            } %}
+            <p class="muted">{{ help[section] }}</p>
+            {{ form_widget(form) }}
+        {% endif %}
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Save</button>
+        </div>
+    {{ form_end(form) }}
+
+    {% if section == 'personal' and profile.personal.photo %}
+        <form id="photo-delete" method="post" action="{{ path('profile_photo_delete') }}" hidden>
+            <input type="hidden" name="_token" value="{{ csrf_token('photo-delete') }}">
+        </form>
+    {% endif %}
+{% endblock %}

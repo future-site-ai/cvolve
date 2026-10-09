@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block title %}Import template{% endblock %}
+{% block body %}
+    <div class="page-head">
+        <div>
+            <h1>Import a template</h1>
+            <p>Upload a template in any supported format. Everything is converted to a sandboxed <code>.cvolve</code> package and checked before installation: no scripts, no remote resources.</p>
+        </div>
+        <a class="btn" href="{{ path('template_gallery') }}">Back</a>
+    </div>
+    {% if errors %}
+        <div class="alert alert-error" style="margin-bottom:16px">
+            <strong>This package cannot be installed:</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+        </div>
+    {% endif %}
+    {% if warnings|default([]) %}
+        <div class="alert alert-warning" style="margin-bottom:16px">
+            <ul style="margin:0;padding-left:18px">{% for w in warnings %}<li>{{ w }}</li>{% endfor %}</ul>
+        </div>
+    {% endif %}
+    {{ form_start(form, {attr: {class: 'card'}}) }}
+        {{ form_row(form.package) }}
+        {% if form.scope is defined %}{{ form_row(form.scope) }}{% endif %}
+        <div class="form-actions"><button class="btn btn-primary">Install</button></div>
+    {{ form_end(form) }}
+    <div class="card" style="margin-top:16px">
+        <h2>Supported formats</h2>
+        <table class="table">
+            <tr><td><strong>.cvolve</strong></td><td>Native package (zip with manifest.json, schema.json, template.html.twig, style.css, fonts/).</td></tr>
+            <tr><td><strong>CVolve HTML</strong></td><td>One <code>.html</code> file with Mustache placeholders: <code>{{ '{{header.name}}' }}</code>, <code>{{ '{{#regions.main}}…{{/regions.main}}' }}</code>, <code>{{ '{{#bullets}}{{.}}{{/bullets}}' }}</code>. <code>&lt;style&gt;</code> blocks become the stylesheet.</td></tr>
+            <tr><td><strong>Twig HTML</strong></td><td>A <code>.html</code>/<code>.twig</code> file using CVolve's Twig variables, without a manifest.</td></tr>
+            <tr><td><strong>JSON Resume theme</strong></td><td>A zip of a theme that renders with Handlebars (<code>resume.hbs</code> + CSS). JavaScript in the theme is ignored.</td></tr>
+            <tr><td><strong>HTML zip</strong></td><td><code>index.html</code> + CSS files (+ <code>fonts/</code>) in any of the HTML flavours above.</td></tr>
+            <tr><td><strong>Finished HTML CV</strong></td><td>A static CV without placeholders, converted by the configured AI provider (or use the CVolve Template Maker).</td></tr>
+        </table>
+        <p class="muted small" style="margin-top:10px">Missing manifest and schema are inferred. The full specification is in the README. Designers can build templates in the <strong>CVolve Template Maker</strong>.</p>
+    </div>
+{% endblock %}

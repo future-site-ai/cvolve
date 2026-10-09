@@ -1,0 +1,14 @@
+{% if wrap_panel|default(false) %}<turbo-frame id="sections-panel">{{ include('_flashes.html.twig') }}{% endif %}
+<turbo-frame id="cv-header">
+    <div class="section-card" style="margin-bottom:10px">
+        {{ form_start(form, {action: path('cv_header_edit', {id: cv.id, locale: variant.locale}), attr: {'data-turbo-frame': 'sections-panel', class: 'editing'}}) }}
+            <h3>Header</h3>
+            <div class="fields">{% for child in form %}{% if child.vars.name != '_token' %}{{ form_row(child) }}{% endif %}{% endfor %}</div>
+            <div class="form-actions">
+                <a class="btn btn-ghost" href="{{ path('cv_sections', {id: cv.id, locale: variant.locale}) }}">Cancel</a>
+                <button class="btn btn-primary">Save header</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</turbo-frame>
+{% if wrap_panel|default(false) %}</turbo-frame>{% endif %}

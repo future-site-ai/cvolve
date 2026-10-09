@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ app_name }}{% endblock %} · {{ app_name }}</title>
+    <meta name="description" content="CVolve — open-source CV builder with templates, A4 PDF/DOCX export and an AI assistant.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%234f46e5%22/><text x=%2216%22 y=%2222%22 font-size=%2216%22 font-family=%22Arial%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22white%22>Cv</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>try{var t=localStorage.getItem('cvolve-theme');if(t&&t!=='system')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}{% block importmap %}{{ importmap('app') }}{% endblock %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <header class="topbar">
+        <a class="brand" href="{{ path(app.user ? 'app_dashboard' : 'app_home') }}"><span class="brand-mark">Cv</span> CVolve</a>
+        {% set route = app.request.attributes.get('_route') %}
+        <nav class="nav">
+            {% if app.user %}
+                <a href="{{ path('app_dashboard') }}" class="{{ route starts with 'app_dashboard' or route starts with 'cv_' ? 'active' }}">My CVs</a>
+                <a href="{{ path('profile_edit') }}" class="{{ route starts with 'profile' ? 'active' }}">Master profile</a>
+                <a href="{{ path('template_gallery') }}" class="{{ route starts with 'template' ? 'active' }}">Templates</a>
+                {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('admin_dashboard') }}" class="{{ route starts with 'admin' ? 'active' }}">Admin</a>{% endif %}
+            {% endif %}
+        </nav>
+        <div class="topbar-right">
+            <button type="button" class="btn btn-ghost btn-icon" data-controller="theme" data-action="theme#toggle" aria-label="Switch theme">◐</button>
+            {% if app.user %}
+                <a class="btn btn-ghost btn-sm" href="{{ path('account') }}">{{ app.user.fullName|split(' ')|first }}</a>
+                <a class="btn btn-ghost btn-sm" href="{{ path('app_logout') }}">Log out</a>
+            {% else %}
+                <a class="btn btn-ghost btn-sm" href="{{ path('app_login') }}">Log in</a>
+                <a class="btn btn-primary btn-sm" href="{{ path('app_register') }}">Sign up</a>
+            {% endif %}
+        </div>
+    </header>
+
+    {% block main %}
+        <main class="{% block container_class %}container{% endblock %}">
+            {{ include('_flashes.html.twig') }}
+            {% block body %}{% endblock %}
+        </main>
+    {% endblock %}
+</body>
+</html>

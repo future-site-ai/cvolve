@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block title %}Open-source CV builder{% endblock %}
+{% block main %}
+    <section class="hero">
+        <span class="badge badge-primary">Open source · Self-hostable</span>
+        <h1 style="margin-top:14px">Your career, one master profile.<br>Every CV, tailored in minutes.</h1>
+        <p>CVolve keeps your whole career in one place and turns it into polished, print-ready CVs. Pick a template, let the AI assistant draft and tailor the content, and export A4 PDF or Word.</p>
+        <div class="row" style="justify-content:center;margin-top:22px">
+            <a class="btn btn-primary" href="{{ path('app_register') }}">Create your free account</a>
+            <a class="btn" href="{{ path('app_login') }}">Log in</a>
+        </div>
+    </section>
+    <section class="features">
+        <div class="card feature"><h3>🗂 Master profile</h3><p class="muted">Enter everything once with structured forms, or import a Markdown file or an old CV (PDF/DOCX) and let the AI sort it.</p></div>
+        <div class="card feature"><h3>🎨 Templates that stay pretty</h3><p class="muted">Content and design are separate. The AI edits words, never styles, so every CV keeps its layout.</p></div>
+        <div class="card feature"><h3>🤖 Assistant you approve</h3><p class="muted">Ask for a summary, tailor to a job ad or translate. Each change arrives as a diff you apply or discard.</p></div>
+        <div class="card feature"><h3>📄 A4 PDF &amp; DOCX</h3><p class="muted">Exports render through Chromium for pixel-accurate PDFs, plus editable Word documents.</p></div>
+        <div class="card feature"><h3>🌍 Multilingual</h3><p class="muted">Keep English, Italian, German… versions of the same CV side by side, with AI translation.</p></div>
+        <div class="card feature"><h3>🔌 API &amp; MCP</h3><p class="muted">Connect Claude Desktop or Cursor through the MCP server, or automate with the REST API.</p></div>
+    </section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% if wrap_panel|default(false) %}<turbo-frame id="sections-panel">{{ include('_flashes.html.twig') }}{% endif %}
+<turbo-frame id="section-{{ section.id }}">
+    <div class="section-card">
+        {{ form_start(form, {action: path('cv_section_edit', {id: cv.id, sectionId: section.id, locale: variant.locale}), attr: {'data-turbo-frame': 'sections-panel', class: 'editing', novalidate: 'novalidate'}}) }}
+            <div class="row" style="margin-bottom:10px">
+                <h3 style="margin:0;flex:1">{{ section_label(section.type) }}</h3>
+                {% if rules.maxItems is defined %}<span class="badge">max {{ rules.maxItems }} entries</span>{% endif %}
+                {% if rules.maxBullets is defined %}<span class="badge">max {{ rules.maxBullets }} bullets</span>{% endif %}
+            </div>
+            <div class="fields">
+                {{ form_row(form.title) }}
+                {% if form.region is defined %}{{ form_row(form.region) }}{% endif %}
+            </div>
+            {% if form.text is defined %}{{ form_row(form.text) }}{% else %}{{ form_widget(form.items) }}{% endif %}
+            <p class="form-help">Hidden entries and bullets stay in the CV but are not printed.</p>
+            <div class="form-actions">
+                <a class="btn btn-ghost" href="{{ path('cv_sections', {id: cv.id, locale: variant.locale}) }}">Cancel</a>
+                <button class="btn btn-primary">Save</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</turbo-frame>
+{% if wrap_panel|default(false) %}</turbo-frame>{% endif %}

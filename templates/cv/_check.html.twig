@@ -1,0 +1,21 @@
+<turbo-frame id="cv-check">
+    <form method="post" action="{{ path('cv_check', {id: cv.id, locale: variant.locale}) }}" class="stack" style="margin-bottom:16px">
+        <div>
+            <label for="jd">Job description (optional)</label>
+            <textarea id="jd" name="job_description" rows="4" placeholder="Paste a job ad to measure keyword coverage">{{ job_description }}</textarea>
+        </div>
+        <div class="row">
+            <label class="checkbox-row" style="margin:0"><input type="checkbox" name="measure" value="1"> <span>Count pages exactly (renders the PDF)</span></label>
+            <span class="spacer"></span>
+            <button class="btn btn-primary btn-sm">Run check</button>
+        </div>
+    </form>
+    <div class="row" style="margin-bottom:10px">
+        <span class="badge">{{ report.stats.pages_measured ? '' : '≈' }}{{ report.stats.pages }} page{{ report.stats.pages > 1 ? 's' }}</span>
+        <span class="badge">{{ report.stats.bullets }} bullets</span>
+        {% if report.stats.keyword_coverage is defined %}<span class="badge {{ report.stats.keyword_coverage >= 60 ? 'badge-success' : 'badge-warning' }}">{{ report.stats.keyword_coverage }}% keyword coverage</span>{% endif %}
+    </div>
+    <ul class="findings">
+        {% for f in report.findings %}<li class="{{ f.level }}"><strong>{{ f.level == 'error' ? '✕' : (f.level == 'warning' ? '!' : 'i') }}</strong> <span>{{ f.message }}</span></li>{% endfor %}
+    </ul>
+</turbo-frame>

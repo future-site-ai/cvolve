@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+{% block title %}Import into master profile{% endblock %}
+{% block body %}
+    <div class="page-head">
+        <div>
+            <h1>Import into your master profile</h1>
+            <p>Upload a Markdown file (like <code>master_info.md</code>), an existing CV, or CVolve profile JSON. You review everything before it is saved.</p>
+        </div>
+        <a class="btn" href="{{ path('profile_edit') }}">Back to profile</a>
+    </div>
+    {% if not ai_available %}
+        <div class="alert alert-warning" style="margin-bottom:16px">No AI provider is configured: only CVolve profile JSON can be imported. Set <code>AI_PROVIDER</code> and an API key to parse Markdown, PDF and DOCX.</div>
+    {% endif %}
+    {{ form_start(form, {attr: {class: 'card'}}) }}
+        {{ form_row(form.file) }}
+        {{ form_row(form.text) }}
+        <div class="form-actions"><button class="btn btn-primary" type="submit">Analyse</button></div>
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,109 @@
+{#
+  CVolve preset "Software Engineer".
+  Variables: header, regions.sidebar, regions.main, labels, cv. See the README for the full contract.
+#}
+{% macro section(s, labels, compact) %}
+  <section class="block block-{{ s.type }}">
+    <h2>{{ s.title }}</h2>
+    {% if s.type == 'summary' %}
+      <p class="summary">{{ s.text|md }}</p>
+
+    {% elseif s.type == 'skills' %}
+      {% for item in s.items %}
+        <p class="skill"><span class="skill-group">{{ item.group }}</span>{% if compact %}<br>{% else %}: {% endif %}{{ item.skills|md }}</p>
+      {% endfor %}
+
+    {% elseif s.type == 'languages' %}
+      {% for item in s.items %}
+        <p class="lang"><strong>{{ item.name }}</strong>{% if item.level %} — {{ item.level }}{% endif %}{% if item.note and not compact %} <span class="muted">({{ item.note }})</span>{% endif %}</p>
+      {% endfor %}
+
+    {% elseif s.type == 'certifications' %}
+      {% for item in s.items %}
+        <p class="cert">{% if item.date %}<span class="cert-date">{{ item.date }}</span> {% endif %}{{ item.name }}{% if item.issuer %} <span class="muted">— {{ item.issuer }}</span>{% endif %}</p>
+      {% endfor %}
+
+    {% elseif s.type == 'publications' %}
+      <ol class="pubs">
+        {% for item in s.items %}
+          <li>{{ item.authors|md }} — <em>“{{ item.title }}”</em>{% if item.venue %} {{ item.venue }}{% endif %}{% if item.date %}, {{ item.date }}{% endif %}.</li>
+        {% endfor %}
+      </ol>
+
+    {% elseif s.type == 'custom' %}
+      {% if compact %}
+        <ul class="plain">
+          {% for item in s.items %}
+            <li>{% if item.title %}<strong>{{ item.title }}</strong>{% if item.subtitle %}, {{ item.subtitle }}{% endif %}{% if item.date %} <span class="muted">({{ item.date }})</span>{% endif %}{% if item.description %} — {% endif %}{% endif %}{{ item.description|md }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        {% for item in s.items %}
+          <div class="entry">
+            {% if item.title %}<div class="entry-head"><h3>{{ item.title }}</h3>{% if item.date %}<span class="date">{{ item.date }}</span>{% endif %}</div>{% endif %}
+            {% if item.subtitle %}<p class="org">{{ item.subtitle }}</p>{% endif %}
+            {% if item.description %}<p>{{ item.description|md }}</p>{% endif %}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+    {% else %}
+      {# experience, projects, education #}
+      {% for item in s.items %}
+        {% set title = item.title ?? item.name ?? item.degree %}
+        {% set org = s.type == 'experience' ? [item.organization, item.location]|filter(v => v)|join(', ')
+          : (s.type == 'education' ? [item.institution, item.location]|filter(v => v)|join(', ') : item.role) %}
+        <div class="entry">
+          <div class="entry-head">
+            <h3>{{ title|md }}{% if item.grade %} <span class="grade">— {{ labels.grade }}: {{ item.grade }}</span>{% endif %}</h3>
+            {% if item|period %}<span class="date">{{ item|period }}</span>{% endif %}
+          </div>
+          {% if org %}<p class="org">{{ org }}</p>{% endif %}
+          {% if item.url %}<p class="link">{{ item.url|pretty_url }}</p>{% endif %}
+          {% if item.description %}<p>{{ item.description|md }}</p>{% endif %}
+          {% if item.bullets is defined and item.bullets %}
+            <ul>{% for bullet in item.bullets %}<li>{{ bullet|md }}</li>{% endfor %}</ul>
+          {% endif %}
+          {% if item.tech %}<p class="tech"><strong>{{ labels.tech }}:</strong> {{ item.tech }}</p>{% endif %}
+        </div>
+      {% endfor %}
+    {% endif %}
+  </section>
+{% endmacro %}
+
+<div class="cv">
+  <aside class="side">
+    {% if header.photo %}<div class="photo"><img src="{{ header.photo }}" alt=""></div>{% endif %}
+    <h1>{{ header.name }}</h1>
+    {% if header.headline %}<p class="headline">{{ header.headline }}</p>{% endif %}
+
+    <section class="block">
+      <h2>{{ labels.contact }}</h2>
+      <ul class="contact">
+        {% if header.location %}<li>{{ header.location }}</li>{% endif %}
+        {% if header.phone %}<li>{{ header.phone }}</li>{% endif %}
+        {% if header.email %}<li>{{ header.email }}</li>{% endif %}
+        {% if header.linkedin %}<li>{{ header.linkedin|pretty_url }}</li>{% endif %}
+        {% if header.github %}<li>{{ header.github|pretty_url }}</li>{% endif %}
+        {% if header.website %}<li>{{ header.website|pretty_url }}</li>{% endif %}
+      </ul>
+    </section>
+
+    {% if header.nationality or header.dateOfBirth or header.workAuthorization or header.drivingLicence or header.extra %}
+      <section class="block">
+        <h2>{{ labels.personal }}</h2>
+        {% if header.nationality %}<p><strong>{{ labels.nationality }}:</strong> {{ header.nationality }}</p>{% endif %}
+        {% if header.dateOfBirth %}<p><strong>{{ labels.born }}:</strong> {{ header.dateOfBirth }}</p>{% endif %}
+        {% if header.workAuthorization %}<p><strong>{{ labels.work_authorization }}:</strong> {{ header.workAuthorization }}</p>{% endif %}
+        {% if header.drivingLicence %}<p><strong>{{ labels.driving_licence }}:</strong> {{ header.drivingLicence }}</p>{% endif %}
+        {% if header.extra %}<p>{{ header.extra }}</p>{% endif %}
+      </section>
+    {% endif %}
+
+    {% for s in regions.sidebar %}{{ _self.section(s, labels, true) }}{% endfor %}
+  </aside>
+
+  <main class="main">
+    {% for s in regions.main %}{{ _self.section(s, labels, false) }}{% endfor %}
+  </main>
+</div>

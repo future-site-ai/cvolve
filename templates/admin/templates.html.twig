@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block title %}Templates · Admin{% endblock %}
+{% block body %}
+    <div class="page-head"><div><h1>Preset templates</h1><p>Presets are available to every user. Import new ones as <code>.cvolve</code> packages.</p></div>
+        <a class="btn btn-primary" href="{{ path('template_import') }}">Import preset</a>
+    </div>
+    {{ include('admin/_nav.html.twig') }}
+    <div class="card table-wrap">
+        <table class="table">
+            <thead><tr><th>Template</th><th>Version</th><th>Used by</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                {% for template in templates %}
+                    {% set token = csrf_token('admin-template-' ~ template.id) %}
+                    <tr>
+                        <td><strong>{{ template.name }}</strong><br><span class="muted small">{{ template.slug }} · {{ template.author }}</span></td>
+                        <td>{{ template.version }}</td>
+                        <td>{{ usage[template.id] ?? 0 }} CVs</td>
+                        <td>{% if template.published %}<span class="badge badge-success">published</span>{% else %}<span class="badge">hidden</span>{% endif %}</td>
+                        <td class="nowrap" style="text-align:right">
+                            <a class="btn btn-sm" href="{{ path('template_preview', {id: template.id}) }}" target="_blank" rel="noopener">Preview</a>
+                            <a class="btn btn-sm" href="{{ path('template_export', {id: template.id}) }}" data-turbo="false">Export</a>
+                            <form method="post" action="{{ path('admin_template_action', {id: template.id, action: template.published ? 'unpublish' : 'publish'}) }}" class="inline">
+                                <input type="hidden" name="_token" value="{{ token }}"><button class="btn btn-sm">{{ template.published ? 'Unpublish' : 'Publish' }}</button>
+                            </form>
+                            <form method="post" action="{{ path('admin_template_action', {id: template.id, action: 'thumbnail'}) }}" class="inline">
+                                <input type="hidden" name="_token" value="{{ token }}"><button class="btn btn-sm">Thumbnail</button>
+                            </form>
+                            <form method="post" action="{{ path('template_delete', {id: template.id}) }}" class="inline" data-turbo-confirm="Delete this preset?">
+                                <input type="hidden" name="_token" value="{{ csrf_token('template-delete-' ~ template.id) }}"><button class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

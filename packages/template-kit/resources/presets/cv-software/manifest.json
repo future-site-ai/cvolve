@@ -1,0 +1,19 @@
+{
+  "format": "cvolve-template",
+  "formatVersion": 1,
+  "name": "Software Engineer",
+  "slug": "cv-software",
+  "version": "1.0.0",
+  "author": "Future Site Di Haidar Anbar",
+  "licence": "MIT (template), SIL OFL 1.1 (Inter font)",
+  "description": "Two-column A4 layout with a dark sidebar for contact details, skills and languages, and a roomy main column for experience. Built for technical roles.",
+  "page": "A4",
+  "maxPages": 2,
+  "fonts": [
+    {"family": "Inter", "file": "fonts/inter-400.woff2", "weight": "400"},
+    {"family": "Inter", "file": "fonts/inter-500.woff2", "weight": "500"},
+    {"family": "Inter", "file": "fonts/inter-600.woff2", "weight": "600"},
+    {"family": "Inter", "file": "fonts/inter-700.woff2", "weight": "700"}
+  ],
+  "docx": {"accent": "#0984E3", "font": "Calibri"}
+}

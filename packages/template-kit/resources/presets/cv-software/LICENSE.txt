@@ -1,0 +1,2 @@
+Template (template.html.twig, style.css, manifest.json, schema.json): MIT License, (c) Future Site Di Haidar Anbar.
+Fonts in fonts/: Inter by Rasmus Andersson, SIL Open Font License 1.1 (https://openfontlicense.org).

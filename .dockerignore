@@ -1,0 +1,10 @@
+.git
+.env.local
+.env.*.local
+var/
+vendor/
+node_modules/
+public/assets/
+assets/vendor/
+.phpunit.cache/
+md/

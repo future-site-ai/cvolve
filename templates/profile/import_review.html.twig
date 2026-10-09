@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% block title %}Review import{% endblock %}
+{% block body %}
+    <div class="page-head">
+        <div>
+            <h1>Review import</h1>
+            <p>{{ job.originalFilename ?? 'Pasted text' }} · {{ job.createdAt|date('d M Y H:i') }}</p>
+        </div>
+        <a class="btn" href="{{ path('profile_import') }}">New import</a>
+    </div>
+
+    {% if job.busy %}
+        <div class="card empty" data-controller="poll" data-poll-url-value="{{ path('profile_import_show', {id: job.id, status: 1}) }}">
+            <span class="spinner"></span>
+            <h2 style="margin-top:12px">Reading your document…</h2>
+            <p>The AI is turning it into structured profile data. This usually takes 10–60 seconds.</p>
+        </div>
+    {% elseif job.status == 'failed' %}
+        <div class="alert alert-error">The import failed: {{ job.error }}</div>
+    {% elseif job.status == 'applied' %}
+        <div class="alert alert-success">This import was applied. <a href="{{ path('profile_edit') }}">Open your master profile</a>.</div>
+    {% else %}
+        <form method="post" action="{{ path('profile_import_apply', {id: job.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('import-apply') }}">
+            <div class="card stack" style="margin-bottom:16px">
+                <h2>What was found</h2>
+                <p class="muted">Untick anything you do not want to import.</p>
+                <div class="choice-list cols">
+                    {% set personal = data.personal|default({})|filter(v => v) %}
+                    <label class="checkbox-row"><input type="checkbox" name="sections[]" value="personal" {{ personal ? 'checked' }}> <span>{{ labels.personal }} <span class="muted">({{ personal|length }} fields)</span></span></label>
+                    {% for key, count in counts %}
+                        <label class="checkbox-row"><input type="checkbox" name="sections[]" value="{{ key }}" {{ count ? 'checked' : 'disabled' }}> <span>{{ labels[key] }} <span class="muted">({{ count }})</span></span></label>
+                    {% endfor %}
+                </div>
+                <div>
+                    <label>How to import</label>
+                    <div class="choice-list">
+                        <label class="checkbox-row"><input type="radio" name="mode" value="merge" checked> <span><strong>Add</strong> to my profile (keep existing entries; only fill empty personal fields)</span></label>
+                        <label class="checkbox-row"><input type="radio" name="mode" value="replace"> <span><strong>Replace</strong> the selected parts of my profile</span></label>
+                    </div>
+                </div>
+                <div class="form-actions"><button class="btn btn-primary">Import selected</button></div>
+            </div>
+        </form>
+
+        <div class="grid grid-2">
+            {% if personal %}
+                <div class="card"><h3>{{ labels.personal }}</h3>
+                    <table class="table">{% for k, v in personal %}<tr><td class="muted">{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
+                </div>
+            {% endif %}
+            {% for key, count in counts|filter(c => c > 0) %}
+                <div class="card">
+                    <h3>{{ labels[key] }} <span class="badge">{{ count }}</span></h3>
+                    <ul class="small" style="padding-left:18px;margin:0">
+                        {% for item in data[key] %}
+                            <li>{{ item.title ?? item.name ?? item.degree ?? item.group ?? item.label ?? '—' }}{% if item.company ?? item.institution ?? item.issuer ?? false %} — <span class="muted">{{ item.company ?? item.institution ?? item.issuer }}</span>{% endif %}
+                                {% if item.bullets is defined and item.bullets %}<span class="muted">· {{ item.bullets|length }} bullets</span>{% endif %}
+                                {% if item.projects is defined and item.projects %}<span class="muted">· {{ item.projects|length }} projects</span>{% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block title %}Check your email{% endblock %}
+{% block container_class %}container-narrow{% endblock %}
+{% block body %}
+    <div class="card">
+        <h1>Check your email</h1>
+        <p>If an account matches your email, we sent a link to reset your password. It expires {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+        <p class="muted small">Didn't get it? Check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.</p>
+    </div>
+{% endblock %}

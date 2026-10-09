@@ -1,0 +1,100 @@
+/* CVolve preset "Software Engineer" — two columns on A4. */
+:root {
+  --sidebar: #1a1a2e;
+  --sidebar-text: rgba(255, 255, 255, .86);
+  --sidebar-muted: rgba(255, 255, 255, .58);
+  --accent: #0984e3;
+  --accent-soft: #74b9ff;
+  --text: #2f3640;
+  --muted: #6b7a8c;
+  --rule: #dfe3e8;
+  --side-width: 30%;
+}
+
+@page { size: A4; margin: 0; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* The sidebar colour is painted on every page by the root background, so it
+   reaches the bottom of each sheet however long the content is. */
+html, body {
+  background: linear-gradient(to right, var(--sidebar) 0, var(--sidebar) var(--side-width), #fff var(--side-width), #fff 100%);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 9.2pt;
+  line-height: 1.38;
+  color: var(--text);
+}
+
+.cv { display: grid; grid-template-columns: var(--side-width) 1fr; min-height: 297mm; }
+
+/* Padding repeats at the top and bottom of every page the column spans */
+.side, .main { -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.side { color: var(--sidebar-text); padding: 13mm 6.5mm 12mm 7mm; }
+.main { padding: 13mm 11mm 12mm 9mm; }
+
+.photo { text-align: center; margin-bottom: 5mm; }
+.photo img { width: 31mm; height: 31mm; border-radius: 50%; object-fit: cover; border: 1mm solid rgba(255, 255, 255, .14); }
+
+h1 { font-size: 17pt; line-height: 1.15; font-weight: 700; color: #fff; letter-spacing: -.01em; }
+.headline { margin-top: 1.5mm; color: var(--accent-soft); font-weight: 500; font-size: 9.3pt; line-height: 1.3; }
+
+h2 {
+  font-size: 10pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--accent);
+  border-bottom: 1.6pt solid var(--accent);
+  padding-bottom: 1mm;
+  margin: 0 0 2.4mm;
+  break-after: avoid;
+}
+.side h2 { color: #fff; border-bottom: 1pt solid rgba(255, 255, 255, .2); font-size: 9pt; }
+
+.block { margin-bottom: 5.5mm; }
+.side .block { margin-top: 6mm; margin-bottom: 0; }
+
+p { margin: 0 0 1.2mm; }
+.side p, .side li { font-size: 8.3pt; color: var(--sidebar-text); }
+.side strong, .skill-group { color: #fff; font-weight: 600; }
+.side .muted, .side .cert-date { color: var(--sidebar-muted); }
+
+.contact { list-style: none; }
+.contact li { margin-bottom: 1mm; word-break: break-word; }
+
+.skill { margin-bottom: 1.8mm; line-height: 1.35; }
+.cert { font-size: 8pt !important; margin-bottom: 1.4mm; }
+.cert-date { font-size: 7.5pt; white-space: nowrap; }
+
+ul { padding-left: 4.2mm; margin: 1mm 0 0; }
+li { margin-bottom: .9mm; }
+ul.plain { list-style: square; }
+.side ul.plain li::marker { color: var(--accent-soft); }
+
+.summary { text-align: justify; font-size: 9.4pt; }
+
+.entry { margin-bottom: 3.6mm; }
+/* Long entries may split across pages, but never right after their heading */
+.entry-head, .org { break-after: avoid; }
+.side .block p, .side .block li { break-inside: avoid; }
+.entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4mm; }
+.entry-head h3 { font-size: 10pt; font-weight: 600; color: #1a1a2e; line-height: 1.3; }
+.date { flex-shrink: 0; font-size: 8.3pt; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.org { font-style: italic; color: var(--muted); font-size: 8.7pt; margin-bottom: 1mm; }
+.grade { font-weight: 500; color: var(--muted); font-size: 9pt; }
+.link { color: var(--accent); font-size: 8.3pt; }
+.tech { color: var(--muted); font-size: 8.3pt; font-style: italic; margin-top: 1mm; }
+.main li { text-align: justify; }
+.main .entry ul { break-inside: auto; }
+.main li { break-inside: avoid; }
+
+.pubs { padding-left: 4.5mm; }
+.pubs li { margin-bottom: 1.6mm; font-size: 8.7pt; }
+.muted { color: var(--muted); }
+
+html[dir="rtl"], html[dir="rtl"] body { background: linear-gradient(to left, var(--sidebar) 0, var(--sidebar) var(--side-width), #fff var(--side-width), #fff 100%); }

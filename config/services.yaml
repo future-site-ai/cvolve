@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+parameters:
+    app.storage_dir: '%env(resolve:STORAGE_DIR)%'
+    app.mailer_from: '%env(MAILER_FROM)%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    # Shared template engine (packages/template-kit)
+    Cvolve\TemplateKit\:
+        resource: '../vendor/future-site/cvolve-template-kit/src/'
+        exclude:
+            - '../vendor/future-site/cvolve-template-kit/src/**/*Exception.php'
+            - '../vendor/future-site/cvolve-template-kit/src/Package/TemplatePackage.php'
+            - '../vendor/future-site/cvolve-template-kit/src/Import/ImportResult.php'
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Entity/'
+            - '../src/Kernel.php'

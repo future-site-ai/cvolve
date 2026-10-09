@@ -1,0 +1,2 @@
+Template files: MIT License, (c) Future Site Di Haidar Anbar.
+Fonts in fonts/: Source Serif 4 by Adobe, SIL Open Font License 1.1 (https://openfontlicense.org).

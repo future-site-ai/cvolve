@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block title %}Versions · {{ cv.title }}{% endblock %}
+{% block body %}
+    <div class="page-head">
+        <div>
+            <h1>Version history</h1>
+            <p>{{ cv.title }} · {{ locale_name(variant.locale) }}. A snapshot is taken automatically before every applied AI change and before each restore.</p>
+        </div>
+        <a class="btn" href="{{ path('cv_editor', {id: cv.id, locale: variant.locale}) }}">Back to editor</a>
+    </div>
+    <form method="post" action="{{ path('cv_version_save', {id: cv.id, locale: variant.locale}) }}" class="card row" style="margin-bottom:16px">
+        <input type="hidden" name="_token" value="{{ csrf_token('cv-versions-' ~ cv.id) }}">
+        <input type="text" name="label" placeholder="Name this version, e.g. Sent to Acme" style="flex:1;min-width:220px">
+        <button class="btn btn-primary">Save current version</button>
+    </form>
+    <div class="card table-wrap">
+        <table class="table">
+            <thead><tr><th>Version</th><th>Reason</th><th>Saved</th><th></th></tr></thead>
+            <tbody>
+                {% for version in versions %}
+                    <tr>
+                        <td><strong>{{ version.label }}</strong></td>
+                        <td><span class="badge {{ version.reason == 'ai' ? 'badge-primary' }}">{{ {manual: 'saved', ai: 'before AI change', restore: 'before restore'}[version.reason] ?? version.reason }}</span></td>
+                        <td class="nowrap muted">{{ version.createdAt|date('d M Y H:i') }}</td>
+                        <td class="nowrap" style="text-align:right">
+                            <a class="btn btn-sm" href="{{ path('cv_version_show', {id: cv.id, versionId: version.id}) }}">Compare with current</a>
+                            <form method="post" action="{{ path('cv_version_restore', {id: cv.id, versionId: version.id}) }}" class="inline" data-turbo-confirm="Restore “{{ version.label }}”? The current state is saved first.">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cv-versions-' ~ cv.id) }}">
+                                <button class="btn btn-sm">Restore</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="4" class="muted">No versions yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

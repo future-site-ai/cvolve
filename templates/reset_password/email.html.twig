@@ -1,0 +1,7 @@
+{% extends 'email/_layout.html.twig' %}
+{% block content %}
+    <h1>Reset your password</h1>
+    <p>Click the button below to choose a new CVolve password. The link expires {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+    <p><a class="button" href="{{ url('app_reset_password', {token: resetToken.token}) }}">Reset password</a></p>
+    <p class="muted">If you did not ask for this, you can ignore this email.</p>
+{% endblock %}

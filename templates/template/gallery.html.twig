@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% block title %}Templates{% endblock %}
+{% block body %}
+    <div class="page-head">
+        <div>
+            <h1>Templates</h1>
+            <p>Templates define the whole design. Your content stays the same when you switch. Share templates as <code>.cvolve</code> files.</p>
+        </div>
+        <a class="btn btn-primary" href="{{ path('template_import') }}">Import .cvolve</a>
+    </div>
+    <div class="grid grid-3">
+        {% for template in templates %}
+            <div class="card template-card">
+                <div class="template-thumb" data-controller="thumb">
+                    <iframe sandbox="" src="{{ path('template_preview', {id: template.id}) }}" title="{{ template.name }} preview" loading="lazy"></iframe>
+                </div>
+                <div class="template-body">
+                    <div class="row"><strong style="flex:1">{{ template.name }}</strong>{% if not template.preset %}<span class="badge">private</span>{% endif %}{% if template.sourceFormat != 'cvolve' %}<span class="badge" title="Imported format">{{ template.sourceFormat }}</span>{% endif %}<span class="badge">v{{ template.version }}</span></div>
+                    <p>{{ template.description }}</p>
+                    <div class="small muted">{{ template.supportedSectionTypes|map(t => section_label(t))|join(' · ') }}</div>
+                    <div class="row">
+                        <a class="btn btn-sm btn-primary" href="{{ path('cv_new', {template: template.id}) }}">Use</a>
+                        <a class="btn btn-sm" href="{{ path('template_preview', {id: template.id}) }}" target="_blank" rel="noopener">Preview</a>
+                        <a class="btn btn-sm" href="{{ path('template_export', {id: template.id}) }}" data-turbo="false">Export</a>
+                        {% if is_granted('TEMPLATE_MANAGE', template) and not template.preset %}
+                            <form method="post" action="{{ path('template_delete', {id: template.id}) }}" class="inline" data-turbo-confirm="Delete this template?">
+                                <input type="hidden" name="_token" value="{{ csrf_token('template-delete-' ~ template.id) }}">
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

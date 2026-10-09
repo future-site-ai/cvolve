@@ -1,0 +1,9 @@
+{% if message.role == 'user' %}
+    <div class="chat-msg user">{{ message.content|nl2br }}</div>
+{% else %}
+    <div class="chat-msg assistant">
+        {{ message.content|chat_markdown }}
+        {% set tools = message.toolCalls|filter(c => c.tool is defined) %}
+        {% if tools %}<div class="tools">🔧 {{ tools|map(c => c.tool ~ (c.ok ? '' : ' ✗'))|join(', ') }}</div>{% endif %}
+    </div>
+{% endif %}

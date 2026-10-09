@@ -1,0 +1,73 @@
+{# CVolve preset "Modern": header band + main column + light aside column. #}
+{% macro entries(s, labels, compact) %}
+  {% for item in s.items %}
+    {% set title = item.title ?? item.name ?? item.degree %}
+    {% set org = s.type == 'experience' ? [item.organization, item.location]|filter(v => v)|join(' · ')
+      : (s.type == 'education' ? [item.institution, item.location]|filter(v => v)|join(' · ') : item.role) %}
+    <div class="entry">
+      <h3>{{ title|md }}</h3>
+      {% if org %}<p class="org">{{ org }}</p>{% endif %}
+      {% if item|period or item.grade %}<p class="date">{{ item|period }}{% if item.grade %}{% if item|period %} · {% endif %}{{ labels.grade }} {{ item.grade }}{% endif %}</p>{% endif %}
+      {% if item.description and not compact %}<p>{{ item.description|md }}</p>{% endif %}
+      {% if item.bullets is defined and item.bullets %}<ul>{% for b in item.bullets %}<li>{{ b|md }}</li>{% endfor %}</ul>{% endif %}
+      {% if item.tech and not compact %}<p class="tech">{{ item.tech }}</p>{% endif %}
+    </div>
+  {% endfor %}
+{% endmacro %}
+
+{% macro section(s, labels, compact) %}
+  <section class="block block-{{ s.type }}">
+    <h2>{{ s.title }}</h2>
+    {% if s.type == 'summary' %}
+      <p class="summary">{{ s.text|md }}</p>
+    {% elseif s.type == 'skills' %}
+      {% for item in s.items %}
+        <p class="group">{{ item.group }}</p>
+        <p class="chips">{% for skill in item.skills|split(',') %}{% if skill|trim %}<span class="chip">{{ skill|trim }}</span>{% endif %}{% endfor %}</p>
+      {% endfor %}
+    {% elseif s.type == 'languages' %}
+      {% for item in s.items %}<p class="lang"><strong>{{ item.name }}</strong><span>{{ item.level }}</span></p>{% endfor %}
+    {% elseif s.type == 'certifications' %}
+      {% for item in s.items %}<p class="cert"><strong>{{ item.name }}</strong><br><span class="muted">{{ [item.issuer, item.date]|filter(v => v)|join(' · ') }}</span></p>{% endfor %}
+    {% elseif s.type == 'publications' %}
+      <ol class="pubs">{% for item in s.items %}<li><em>{{ item.title }}</em> — {{ item.authors|md }}. {{ item.venue }}{% if item.date %}, {{ item.date }}{% endif %}.</li>{% endfor %}</ol>
+    {% elseif s.type == 'custom' %}
+      <ul class="plain">
+        {% for item in s.items %}<li>{% if item.title %}<strong>{{ item.title }}</strong>{% if item.date %} ({{ item.date }}){% endif %}{% if item.description %} — {% endif %}{% endif %}{{ item.description|md }}</li>{% endfor %}
+      </ul>
+    {% else %}
+      {{ _self.entries(s, labels, compact) }}
+    {% endif %}
+  </section>
+{% endmacro %}
+
+<div class="cv">
+  <header class="band">
+    <div class="band-text">
+      <h1>{{ header.name }}</h1>
+      {% if header.headline %}<p class="headline">{{ header.headline }}</p>{% endif %}
+      <p class="contact">{{ [header.location, header.phone, header.email]|filter(v => v)|join('  |  ') }}</p>
+      <p class="contact">{{ [header.linkedin|pretty_url, header.github|pretty_url, header.website|pretty_url]|filter(v => v)|join('  |  ') }}</p>
+    </div>
+    {% if header.photo %}<img class="photo" src="{{ header.photo }}" alt="">{% endif %}
+  </header>
+
+  <div class="body">
+    <main class="main">
+      {% for s in regions.main %}{{ _self.section(s, labels, false) }}{% endfor %}
+    </main>
+    <aside class="aside">
+      {% if header.nationality or header.workAuthorization or header.drivingLicence or header.dateOfBirth or header.extra %}
+        <section class="block">
+          <h2>{{ labels.personal }}</h2>
+          {% if header.nationality %}<p><strong>{{ labels.nationality }}</strong><br>{{ header.nationality }}</p>{% endif %}
+          {% if header.dateOfBirth %}<p><strong>{{ labels.born }}</strong><br>{{ header.dateOfBirth }}</p>{% endif %}
+          {% if header.workAuthorization %}<p><strong>{{ labels.work_authorization }}</strong><br>{{ header.workAuthorization }}</p>{% endif %}
+          {% if header.drivingLicence %}<p><strong>{{ labels.driving_licence }}</strong><br>{{ header.drivingLicence }}</p>{% endif %}
+          {% if header.extra %}<p>{{ header.extra }}</p>{% endif %}
+        </section>
+      {% endif %}
+      {% for s in regions.aside %}{{ _self.section(s, labels, true) }}{% endfor %}
+    </aside>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block title %}Export{% endblock %}
+{% block container_class %}container-narrow{% endblock %}
+{% block body %}
+    <div class="card" style="text-align:center">
+        <h1>{{ job.format|upper }} export</h1>
+        <p class="muted">{{ job.cv.title }} · {{ locale_name(job.variant.locale) }}</p>
+        {% if not job.finished %}
+            <div data-controller="poll" data-poll-url-value="{{ path('export_show', {id: job.id, status: 1}) }}">
+                <p><span class="spinner"></span> Rendering your document…</p>
+                <p class="small muted">If this takes long, make sure the messenger worker is running.</p>
+            </div>
+        {% elseif job.status == 'done' %}
+            <p>Your file is ready.</p>
+            <a class="btn btn-primary" href="{{ path('export_download', {id: job.id}) }}" data-turbo="false">Download {{ job.downloadName }}</a>
+        {% else %}
+            <div class="alert alert-error" style="text-align:left">The export failed: {{ job.error }}</div>
+        {% endif %}
+        <p style="margin-top:18px"><a href="{{ path('cv_editor', {id: job.cv.id, locale: job.variant.locale}) }}">← Back to the editor</a></p>
+    </div>
+{% endblock %}

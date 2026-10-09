@@ -1,0 +1,22 @@
+# Development: live code mounted, debug mode, ports for local tools.
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+services:
+  app:
+    environment:
+      APP_ENV: dev
+      OPCACHE_VALIDATE_TIMESTAMPS: 1
+    volumes:
+      - .:/var/www/html
+      - storage:/var/www/html/var/storage
+  messenger-worker:
+    environment:
+      APP_ENV: dev
+    volumes:
+      - .:/var/www/html
+      - storage:/var/www/html/var/storage
+  database:
+    ports:
+      - "5432:5432"
+  gotenberg:
+    ports:
+      - "3000:3000"

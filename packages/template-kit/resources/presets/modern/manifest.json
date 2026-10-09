@@ -1,0 +1,19 @@
+{
+  "format": "cvolve-template",
+  "formatVersion": 1,
+  "name": "Modern",
+  "slug": "modern",
+  "version": "1.0.0",
+  "author": "Future Site Di Haidar Anbar",
+  "licence": "MIT (template), SIL OFL 1.1 (Lato, Montserrat fonts)",
+  "description": "Bold teal header band with a two-column body: experience on the left, skills and extras in a light right column.",
+  "page": "A4",
+  "maxPages": 2,
+  "fonts": [
+    {"family": "Lato", "file": "fonts/lato-400-normal.woff2", "weight": "400"},
+    {"family": "Lato", "file": "fonts/lato-400-italic.woff2", "weight": "400", "style": "italic"},
+    {"family": "Lato", "file": "fonts/lato-700-normal.woff2", "weight": "700"},
+    {"family": "Montserrat", "file": "fonts/montserrat-600.woff2", "weight": "600"}
+  ],
+  "docx": {"accent": "#0F766E", "font": "Calibri"}
+}

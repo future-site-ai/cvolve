@@ -1,0 +1,20 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: CVolve API
+            description: |
+                REST API for CVolve. Authenticate with a personal API token
+                (Account → API tokens): `Authorization: Bearer cvk_...`.
+                Changes to CVs made through tools are proposals; apply them with
+                POST /api/v1/proposals/{id}/apply or in the editor.
+            version: 1.0.0
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+        security:
+            - Bearer: []
+    areas:
+        path_patterns:
+            - ^/api/v1

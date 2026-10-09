@@ -1,0 +1,2 @@
+Template files: MIT License, (c) Future Site Di Haidar Anbar.
+Fonts in fonts/: Lato (Łukasz Dziedzic) and Montserrat (Julieta Ulanovsky), SIL Open Font License 1.1.

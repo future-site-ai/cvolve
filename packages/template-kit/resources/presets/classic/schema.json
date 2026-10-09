@@ -1,0 +1,14 @@
+{
+  "regions": ["main"],
+  "sections": {
+    "summary": {"maxLength": 1100},
+    "experience": {"maxItems": 8, "maxBullets": 8},
+    "projects": {"maxItems": 6, "maxBullets": 5},
+    "education": {"maxItems": 5},
+    "skills": {"maxItems": 12},
+    "languages": {"maxItems": 8},
+    "certifications": {"maxItems": 14},
+    "publications": {"maxItems": 12},
+    "custom": {"maxItems": 10}
+  }
+}

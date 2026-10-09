@@ -1,0 +1,72 @@
+{# CVolve preset "Classic": one column, serif, centred header. #}
+<div class="cv">
+  <header class="head">
+    {% if header.photo %}<img class="photo" src="{{ header.photo }}" alt="">{% endif %}
+    <h1>{{ header.name }}</h1>
+    {% if header.headline %}<p class="headline">{{ header.headline }}</p>{% endif %}
+    <p class="contact">
+      {{ [header.location, header.phone, header.email, header.linkedin|pretty_url, header.github|pretty_url, header.website|pretty_url]|filter(v => v)|join('  ·  ') }}
+    </p>
+    {% set personal = [
+      header.nationality ? labels.nationality ~ ': ' ~ header.nationality : '',
+      header.dateOfBirth ? labels.born ~ ': ' ~ header.dateOfBirth : '',
+      header.drivingLicence ? labels.driving_licence ~ ': ' ~ header.drivingLicence : ''
+    ]|filter(v => v) %}
+    {% if personal %}<p class="personal">{{ personal|join('  ·  ') }}</p>{% endif %}
+    {% if header.workAuthorization %}<p class="personal">{{ labels.work_authorization }}: {{ header.workAuthorization }}</p>{% endif %}
+    {% if header.extra %}<p class="personal">{{ header.extra }}</p>{% endif %}
+  </header>
+
+  {% for s in regions.main %}
+    <section class="block block-{{ s.type }}">
+      <h2>{{ s.title }}</h2>
+
+      {% if s.type == 'summary' %}
+        <p class="summary">{{ s.text|md }}</p>
+
+      {% elseif s.type == 'skills' %}
+        <table class="kv">
+          {% for item in s.items %}<tr><th>{{ item.group }}</th><td>{{ item.skills|md }}</td></tr>{% endfor %}
+        </table>
+
+      {% elseif s.type == 'languages' %}
+        <p>{% for item in s.items %}<strong>{{ item.name }}</strong>{% if item.level %} ({{ item.level }}){% endif %}{% if not loop.last %}  ·  {% endif %}{% endfor %}</p>
+
+      {% elseif s.type == 'certifications' %}
+        <table class="kv">
+          {% for item in s.items %}<tr><th>{{ item.date }}</th><td><strong>{{ item.name }}</strong>{% if item.issuer %}, {{ item.issuer }}{% endif %}</td></tr>{% endfor %}
+        </table>
+
+      {% elseif s.type == 'publications' %}
+        <ol class="pubs">
+          {% for item in s.items %}<li>{{ item.authors|md }}. <em>{{ item.title }}</em>. {{ item.venue }}{% if item.date %}, {{ item.date }}{% endif %}.</li>{% endfor %}
+        </ol>
+
+      {% elseif s.type == 'custom' %}
+        <ul>
+          {% for item in s.items %}
+            <li>{% if item.title %}<strong>{{ item.title }}</strong>{% if item.subtitle %}, {{ item.subtitle }}{% endif %}{% if item.date %} ({{ item.date }}){% endif %}{% if item.description %}: {% endif %}{% endif %}{{ item.description|md }}</li>
+          {% endfor %}
+        </ul>
+
+      {% else %}
+        {% for item in s.items %}
+          {% set title = item.title ?? item.name ?? item.degree %}
+          {% set org = s.type == 'experience' ? [item.organization, item.location]|filter(v => v)|join(', ')
+            : (s.type == 'education' ? [item.institution, item.location]|filter(v => v)|join(', ') : item.role) %}
+          <div class="entry">
+            <div class="entry-head">
+              <span class="title">{{ title|md }}</span>
+              <span class="date">{{ item|period }}</span>
+            </div>
+            {% if org or item.grade %}<div class="org">{{ org }}{% if item.grade %}{% if org %} — {% endif %}{{ labels.grade }}: {{ item.grade }}{% endif %}</div>{% endif %}
+            {% if item.description %}<p>{{ item.description|md }}</p>{% endif %}
+            {% if item.bullets is defined and item.bullets %}<ul>{% for b in item.bullets %}<li>{{ b|md }}</li>{% endfor %}</ul>{% endif %}
+            {% if item.tech %}<p class="tech">{{ labels.tech }}: {{ item.tech }}</p>{% endif %}
+            {% if item.url %}<p class="tech">{{ item.url|pretty_url }}</p>{% endif %}
+          </div>
+        {% endfor %}
+      {% endif %}
+    </section>
+  {% endfor %}
+</div>

@@ -1,0 +1,6 @@
+framework:
+    rate_limiter:
+        verify_resend:
+            policy: fixed_window
+            limit: 3
+            interval: '15 minutes'

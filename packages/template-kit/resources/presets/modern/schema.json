@@ -1,0 +1,14 @@
+{
+  "regions": ["main", "aside"],
+  "sections": {
+    "summary": {"region": "main", "maxLength": 800},
+    "experience": {"region": "main", "maxItems": 6, "maxBullets": 6},
+    "projects": {"region": "main", "maxItems": 4, "maxBullets": 3},
+    "education": {"region": "aside", "maxItems": 4},
+    "skills": {"region": "aside", "maxItems": 10},
+    "languages": {"region": "aside", "maxItems": 6},
+    "certifications": {"region": "aside", "maxItems": 8},
+    "publications": {"region": "main", "maxItems": 5},
+    "custom": {"region": "aside", "maxItems": 8}
+  }
+}

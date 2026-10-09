@@ -1,0 +1,6 @@
+<nav class="tabs">
+    {% set route = app.request.attributes.get('_route') %}
+    <a href="{{ path('admin_dashboard') }}" class="{{ route == 'admin_dashboard' ? 'active' }}">Overview</a>
+    <a href="{{ path('admin_users') }}" class="{{ route == 'admin_users' ? 'active' }}">Users</a>
+    <a href="{{ path('admin_templates') }}" class="{{ route == 'admin_templates' ? 'active' }}">Preset templates</a>
+</nav>

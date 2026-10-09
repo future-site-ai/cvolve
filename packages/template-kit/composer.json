@@ -1,0 +1,17 @@
+{
+    "name": "future-site/cvolve-template-kit",
+    "description": "CVolve template engine: sandboxed Twig rendering, .cvolve package validation, and converters for Mustache HTML, JSON Resume themes, HTML zips and AI-converted raw HTML.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [{"name": "Future Site Di Haidar Anbar", "homepage": "https://github.com/future-site-ai"}],
+    "require": {
+        "php": ">=8.3",
+        "ext-zip": "*",
+        "ext-dom": "*",
+        "ext-mbstring": "*",
+        "twig/twig": "^3.21"
+    },
+    "autoload": {
+        "psr-4": {"Cvolve\\TemplateKit\\": "src/"}
+    }
+}

@@ -1,0 +1,176 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ cv.title }}{% endblock %}
+{% block main %}
+{% set locale = variant.locale %}
+<div class="editor" data-controller="dialog">
+    {# ---------------- left: header + sections ---------------- #}
+    <aside class="editor-pane editor-left" aria-label="Sections">
+        {{ include('cv/_sections_frame.html.twig') }}
+    </aside>
+
+    {# ---------------- center: toolbar + live preview ---------------- #}
+    <section class="editor-center" data-controller="preview" data-preview-url-value="{{ path('cv_preview', {id: cv.id, locale: locale}) }}">
+        <div class="editor-toolbar">
+            <span class="editor-title" title="{{ cv.title }}">{{ cv.title }}</span>
+            <nav class="locale-tabs" aria-label="Language versions">
+                {% for v in cv.variants %}
+                    <a href="{{ path('cv_editor', {id: cv.id, locale: v.locale}) }}" class="{{ v.locale == locale ? 'active' }}" title="{{ locale_name(v.locale) }}">{{ v.locale }}</a>
+                {% endfor %}
+            </nav>
+            <details class="menu">
+                <summary class="btn btn-ghost btn-sm" title="Language versions">+ Language</summary>
+                <div class="menu-panel left">
+                    <form method="post" action="{{ path('cv_variant_add', {id: cv.id, locale: locale}) }}" class="stack">
+                        <input type="hidden" name="_token" value="{{ csrf_token('cv-variants-' ~ cv.id) }}">
+                        <div>
+                            <label>New language</label>
+                            <select name="new_locale">
+                                {% for code, name in locales %}{% if code not in cv.locales %}<option value="{{ code }}">{{ name }}</option>{% endif %}{% endfor %}
+                            </select>
+                        </div>
+                        <div class="choice-list">
+                            <label class="checkbox-row"><input type="radio" name="mode" value="copy" checked> <span>Copy this version</span></label>
+                            <label class="checkbox-row"><input type="radio" name="mode" value="translate" {{ not ai_available ? 'disabled' }}> <span>Translate with AI{% if not ai_available %} <span class="muted">(no AI configured)</span>{% endif %}</span></label>
+                            <label class="checkbox-row"><input type="radio" name="mode" value="master"> <span>Fresh from master profile</span></label>
+                        </div>
+                        <button class="btn btn-primary btn-sm">Add language</button>
+                    </form>
+                    {% if cv.variants|length > 1 %}
+                        <hr style="margin:10px 0">
+                        <form method="post" action="{{ path('cv_variant_delete', {id: cv.id, locale: locale}) }}" onsubmit="return confirm('Delete the {{ locale_name(locale) }} version?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cv-variants-' ~ cv.id) }}">
+                            <button class="btn btn-sm btn-danger">Delete the {{ locale_name(locale) }} version</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </details>
+            <span class="spacer"></span>
+            <select class="btn btn-sm" style="width:auto" data-preview-target="zoom" data-action="preview#zoom" aria-label="Zoom">
+                <option value="0.6">60%</option><option value="0.75">75%</option><option value="0.9" selected>90%</option><option value="1">100%</option><option value="1.25">125%</option>
+            </select>
+            <a class="btn btn-sm" href="{{ path('cv_preview_pdf', {id: cv.id, locale: locale}) }}" target="_blank" rel="noopener" title="Exact PDF rendering">PDF preview</a>
+            <details class="menu">
+                <summary class="btn btn-sm btn-primary">Export</summary>
+                <div class="menu-panel">
+                    {% for format, label in {pdf: 'A4 PDF', docx: 'Word (DOCX)'} %}
+                        <form method="post" action="{{ path('cv_export', {id: cv.id, format: format, locale: locale}) }}" data-turbo="false">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cv-export-' ~ cv.id) }}">
+                            <button class="btn btn-ghost btn-sm">Download {{ label }}</button>
+                        </form>
+                    {% endfor %}
+                </div>
+            </details>
+            <details class="menu">
+                <summary class="btn btn-sm" aria-label="More">⋯</summary>
+                <div class="menu-panel">
+                    <button class="btn btn-ghost btn-sm" data-action="dialog#open" data-dialog-id-param="check-dialog">Check CV</button>
+                    <a class="btn btn-ghost btn-sm" href="{{ path('cv_versions', {id: cv.id, locale: locale}) }}">Version history</a>
+                    <button class="btn btn-ghost btn-sm" data-action="dialog#open" data-dialog-id-param="share-dialog">Share link</button>
+                    <button class="btn btn-ghost btn-sm" data-action="dialog#open" data-dialog-id-param="settings-dialog">CV settings &amp; template</button>
+                    <form method="post" action="{{ path('cv_duplicate', {id: cv.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('cv-duplicate-' ~ cv.id) }}">
+                        <button class="btn btn-ghost btn-sm">Duplicate CV</button>
+                    </form>
+                    <form method="post" action="{{ path('cv_delete', {id: cv.id}) }}" data-turbo-confirm="Delete “{{ cv.title }}” and all its versions?">
+                        <input type="hidden" name="_token" value="{{ csrf_token('cv-delete-' ~ cv.id) }}">
+                        <button class="btn btn-ghost btn-sm btn-danger">Delete CV</button>
+                    </form>
+                </div>
+            </details>
+        </div>
+        <div class="preview-wrap">
+            <span class="preview-loading" data-preview-target="spinner" hidden><span class="spinner"></span></span>
+            {# Sandboxed: no scripts run inside the CV preview #}
+            <iframe class="preview-frame" data-preview-target="frame" sandbox="allow-same-origin" title="CV preview" src="{{ path('cv_preview', {id: cv.id, locale: locale}) }}"></iframe>
+        </div>
+    </section>
+
+    {# ---------------- right: AI assistant ---------------- #}
+    <aside class="editor-right" aria-label="AI assistant"
+           data-controller="chat"
+           data-chat-url-value="{{ path('chat_send', {id: cv.id}) }}"
+           data-chat-token-value="{{ csrf_token('chat-' ~ cv.id) }}"
+           data-chat-locale-value="{{ locale }}"
+           data-chat-sections-url-value="{{ path('cv_sections', {id: cv.id, locale: locale}) }}">
+        <div class="chat-head">
+            <h2>✨ Assistant</h2>
+            {% if not ai_available %}<span class="badge badge-warning" title="Set AI_PROVIDER in .env.local">offline mode</span>{% endif %}
+            <form method="post" action="{{ path('chat_clear', {id: cv.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('chat-' ~ cv.id) }}">
+                <button class="btn btn-ghost btn-sm" title="Start a new conversation">New chat</button>
+            </form>
+        </div>
+        <div class="chat-log" data-chat-target="log">
+            {% set messages = conversation ? conversation.messages : [] %}
+            {% if messages is empty %}
+                <div class="chat-empty" data-chat-target="empty">
+                    <p>I can write and edit the <strong>content</strong> of this CV. The template's design stays as it is. Every change I suggest shows up as a diff for you to <strong>Apply</strong> or <strong>Discard</strong>.</p>
+                    <div class="chat-suggestions">
+                        {% for s in [
+                            'Add a professional summary from my master profile',
+                            'Suggest 3 professional summaries for a senior backend role',
+                            'Check my CV and tell me what to improve',
+                            'Make the bullets of my most recent job more concise',
+                            'Hide the experience entries older than 2018',
+                            'Translate this CV to Italian'
+                        ] %}
+                            <button type="button" class="btn btn-sm" data-action="chat#suggest" data-text="{{ s }}">{{ s }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            {% for message in messages %}{{ include('chat/_message.html.twig') }}{% endfor %}
+            {% for proposal in pending %}{{ include('chat/_proposal.html.twig', {preview: previews[proposal.id]}) }}{% endfor %}
+        </div>
+        <form class="chat-form" data-action="submit->chat#send">
+            <textarea data-chat-target="input" data-action="keydown->chat#keydown" placeholder="Ask for a change, paste a job ad to tailor the CV…" rows="3" aria-label="Message"></textarea>
+            <div class="row">
+                <span class="small muted">Enter to send · Shift+Enter for a new line</span>
+                <span class="spacer"></span>
+                <button class="btn btn-primary btn-sm" data-chat-target="send">Send</button>
+            </div>
+        </form>
+    </aside>
+</div>
+
+{# ---------------- dialogs ---------------- #}
+<dialog id="check-dialog">
+    <div class="dialog-head"><h2>CV check</h2><button class="btn btn-ghost btn-icon" data-action="dialog#close">✕</button></div>
+    <div class="dialog-body">
+        <turbo-frame id="cv-check" src="{{ path('cv_check', {id: cv.id, locale: locale}) }}" loading="lazy"><span class="spinner"></span></turbo-frame>
+    </div>
+</dialog>
+
+<dialog id="share-dialog">
+    <div class="dialog-head"><h2>Public link</h2><button class="btn btn-ghost btn-icon" data-action="dialog#close">✕</button></div>
+    <div class="dialog-body stack">
+        {% set share_token = csrf_token('cv-share-' ~ cv.id) %}
+        {% if cv.shareEnabled %}
+            <p>Anyone with this link can view and download the CV (read-only, not indexed by search engines).</p>
+            <div class="row" data-controller="copy">
+                <input type="text" readonly value="{{ url('share_view', {token: cv.shareToken}) }}" data-copy-target="source" style="flex:1">
+                <button type="button" class="btn btn-sm" data-copy-target="button" data-action="copy#copy">Copy</button>
+            </div>
+            <div class="row">
+                <form method="post" action="{{ path('cv_share', {id: cv.id}) }}"><input type="hidden" name="_token" value="{{ share_token }}"><button class="btn btn-sm" name="action" value="regenerate">New link</button></form>
+                <form method="post" action="{{ path('cv_share', {id: cv.id}) }}"><input type="hidden" name="_token" value="{{ share_token }}"><button class="btn btn-sm btn-danger" name="action" value="disable">Turn off</button></form>
+            </div>
+        {% else %}
+            <p>Create a read-only link you can send to recruiters. You can turn it off at any time.</p>
+            <form method="post" action="{{ path('cv_share', {id: cv.id}) }}"><input type="hidden" name="_token" value="{{ share_token }}"><button class="btn btn-primary" name="action" value="enable">Create public link</button></form>
+        {% endif %}
+    </div>
+</dialog>
+
+<dialog id="settings-dialog">
+    <div class="dialog-head"><h2>CV settings</h2><button class="btn btn-ghost btn-icon" data-action="dialog#close">✕</button></div>
+    <div class="dialog-body">
+        {{ form_start(settings_form) }}
+            {{ form_row(settings_form.title) }}
+            {{ form_row(settings_form.template, {help: 'Switching keeps all content. Sections the new template does not support are kept but not shown.'}) }}
+            {{ form_row(settings_form.defaultLocale) }}
+            <div class="form-actions"><button class="btn btn-primary">Save</button></div>
+        {{ form_end(settings_form) }}
+    </div>
+</dialog>
+{% endblock %}

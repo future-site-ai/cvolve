@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+{% block title %}Account{% endblock %}
+{% block body %}
+    <div class="page-head"><div><h1>Account</h1><p>{{ app.user.email }}</p></div></div>
+    <div class="grid grid-2">
+        <div class="card">
+            <h2>Profile</h2>
+            {{ form_start(name_form) }}{{ form_row(name_form.fullName) }}<div class="form-actions"><button class="btn btn-primary">Save</button></div>{{ form_end(name_form) }}
+        </div>
+        <div class="card">
+            <h2>Password</h2>
+            {{ form_start(password_form) }}
+                {{ form_row(password_form.currentPassword) }}
+                {{ form_row(password_form.plainPassword.first) }}
+                {{ form_row(password_form.plainPassword.second) }}
+                {{ form_errors(password_form.plainPassword) }}
+                <div class="form-actions"><button class="btn btn-primary">Change password</button></div>
+            {{ form_end(password_form) }}
+        </div>
+    </div>
+
+    <div class="card" id="tokens" style="margin-top:16px">
+        <div class="card-head"><h2>API tokens</h2><a class="btn btn-sm" href="{{ path('app.swagger_ui') }}" target="_blank" rel="noopener">API docs</a></div>
+        <p class="muted">Personal tokens let scripts (REST API) and AI clients (MCP) act on your CVs. Changes to CVs still arrive as proposals you approve.</p>
+        {% if new_token %}
+            <div class="stack" style="margin-bottom:14px">
+                <div class="token-box" data-controller="copy">
+                    <code data-copy-target="source">{{ new_token }}</code>
+                    <button type="button" class="btn btn-sm" data-copy-target="button" data-action="copy#copy">Copy</button>
+                </div>
+                <p class="small" style="color:var(--warning)">Copy it now: it will not be shown again.</p>
+            </div>
+        {% endif %}
+        {{ form_start(token_form, {attr: {class: 'row', style: 'align-items:flex-end'}}) }}
+            <div style="flex:1;min-width:200px">{{ form_row(token_form.name, {row_attr: {class: ''}}) }}</div>
+            <div>{{ form_row(token_form.expires, {row_attr: {class: ''}}) }}</div>
+            <button class="btn btn-primary">Create token</button>
+        {{ form_end(token_form) }}
+        {% if tokens %}
+            <div class="table-wrap" style="margin-top:14px">
+                <table class="table">
+                    <thead><tr><th>Name</th><th>Token</th><th>Last used</th><th>Expires</th><th></th></tr></thead>
+                    <tbody>
+                        {% for token in tokens %}
+                            <tr>
+                                <td>{{ token.name }}</td>
+                                <td><code>{{ token.hint }}…</code></td>
+                                <td class="muted">{{ token.lastUsedAt ? token.lastUsedAt|date('d M Y H:i') : 'never' }}</td>
+                                <td class="muted">{{ token.expiresAt ? token.expiresAt|date('d M Y') : 'never' }}{% if not token.valid %} <span class="badge badge-danger">expired</span>{% endif %}</td>
+                                <td style="text-align:right">
+                                    <form method="post" action="{{ path('account_token_revoke', {id: token.id}) }}" class="inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('token-revoke-' ~ token.id) }}">
+                                        <button class="btn btn-sm btn-danger">Revoke</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="grid grid-2" style="margin-top:16px">
+        <div class="card">
+            <h2>Connect an AI client (MCP)</h2>
+            <p>CVolve speaks the Model Context Protocol at:</p>
+            <pre>{{ mcp_url }}</pre>
+            <p class="small">Claude Desktop (<code>claude_desktop_config.json</code>), via the <code>mcp-remote</code> bridge:</p>
+            <pre>{
+  "mcpServers": {
+    "cvolve": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "{{ mcp_url }}",
+               "--header", "Authorization: Bearer YOUR_TOKEN"]
+    }
+  }
+}</pre>
+            <p class="small">Cursor (<code>.cursor/mcp.json</code>): <code>{"mcpServers": {"cvolve": {"url": "{{ mcp_url }}", "headers": {"Authorization": "Bearer YOUR_TOKEN"}}}}</code></p>
+        </div>
+        <div class="card">
+            <h2>Status</h2>
+            <table class="table">
+                <tr><td>AI provider</td><td>{% if ai.configured %}<span class="badge badge-success">ready</span> {{ ai.label }}{% else %}<span class="badge badge-warning">not configured</span>{% endif %}</td></tr>
+                <tr><td>PDF rendering (Gotenberg)</td><td>{% if gotenberg %}<span class="badge badge-success">reachable</span>{% else %}<span class="badge badge-danger">unreachable</span>{% endif %}</td></tr>
+            </table>
+            {% if not ai.configured %}<p class="small muted" style="margin-top:10px">Set <code>AI_PROVIDER</code> and <code>AI_API_KEY</code> in <code>.env.local</code> (Gemini, OpenAI, Anthropic, Ollama, Mistral, DeepSeek, Grok or any OpenAI-compatible server).</p>{% endif %}
+        </div>
+    </div>
+{% endblock %}
