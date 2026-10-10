@@ -345,6 +345,10 @@ make test      # PHPUnit on SQLite: sandbox, package validation, proposals, expo
 make stan      # PHPStan level 5
 ```
 
+## 🤝 Contributing
+
+Contributions are welcome! Bug reports, ideas, docs and code all help. Read **[CONTRIBUTING.md](CONTRIBUTING.md)** to get started, and look for issues labelled [`good first issue`](https://github.com/future-site-ai/cvolve/labels/good%20first%20issue).
+
 ## 📄 License
 
 CVolve is open source under the [MIT License](LICENSE), © Future Site Di Haidar Anbar. You are free to use, modify, and distribute it, including commercially, as long as the copyright and license notice are kept. Bundled fonts are under the SIL Open Font License 1.1 (see each template's `LICENSE.txt`).
