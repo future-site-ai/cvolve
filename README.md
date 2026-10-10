@@ -24,6 +24,13 @@ CVolve is an open-source, self-hostable CV builder by **Future Site Di Haidar An
   <img src="docs/screenshots/editor.png" alt="CVolve CV Editor with Live A4 Preview and AI Assistant" width="100%">
 </p>
 
+## 🎬 Videos
+
+<!-- To show a different video here, replace nUsEJEUPVQk (twice) with that video's ID. -->
+[![Watch the CVolve demo on YouTube](https://img.youtube.com/vi/nUsEJEUPVQk/maxresdefault.jpg)](https://www.youtube.com/watch?v=nUsEJEUPVQk)
+
+▶️ **[All CVolve videos on YouTube](https://www.youtube.com/playlist?list=PLXz-_KrjSJRw)**: demos, guides and updates.
+
 ---
 
 ## Quick start (Docker)
