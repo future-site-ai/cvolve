@@ -332,6 +332,7 @@ Run PHP on your machine against containerised services:
 composer install
 make local-deps                      # PostgreSQL :5432, Gotenberg :3000, Mailpit :8025
 cat > .env.local <<'ENV'
+APP_SECRET=change_me_to_a_random_32_char_hex
 DATABASE_URL="postgresql://cvolve:cvolve@127.0.0.1:5432/cvolve?serverVersion=16&charset=utf8"
 GOTENBERG_URL=http://127.0.0.1:3000
 MAILER_DSN=smtp://127.0.0.1:1025
